@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="LH Zerigo DynDns Update" Language="1033" Version="1.0.0.0"
+           Manufacturer="LH" UpgradeCode="1902b705-2b83-4cfd-9404-aeb2597c5822">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
+  </Product>
+
+  <Fragment>
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes">
+      <SymbolPath Path="../Net.DynDnsUpdate/bin/Release"/>
+    </Media>
+
+    <Feature Id="Complete" Title="Dynamic DNS Update Service" Level="1">
+      <ComponentRef Id="DynDnsService" />
+    </Feature>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="LH Dynamic DNS Update Service">
+
+          <Component Id="DynDnsService">
+            <File Name="CommandLine.dll" Vital="yes" DiskId="1" />
+            <File Name="CommandLine.xml" Vital="yes" DiskId="1" />
+            <File Name="Net.DynDnsUpdate.exe" Vital="yes" DiskId="1" KeyPath="yes" />
+            <File Name="Net.DynDnsUpdate.exe.config" Vital="yes" DiskId="1" />
+            <File Name="NLog.config" Vital="yes" DiskId="1" />
+            <File Name="NLog.dll" Vital="yes" DiskId="1" />
+            <File Name="NLog.xml" Vital="yes" DiskId="1" />
+
+            <ServiceInstall
+              Name="LH.ZerigoDynDnsUpdate"
+              Type="ownProcess"
+              Start="auto"
+              ErrorControl="normal"
+              Interactive="no"
+              Account="NT AUTHORITY\SYSTEM"
+              DisplayName="LH Dynamic DNS Update Service for Zerigo.com">
+            </ServiceInstall>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+</Wix>

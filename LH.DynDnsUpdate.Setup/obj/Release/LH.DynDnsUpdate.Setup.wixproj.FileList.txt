@@ -1,0 +1,5 @@
+obj\Release\Product.wixobj
+obj\Release\LH.DynDnsUpdate.Setup.wixproj.BindContentsFileListnull.txt
+obj\Release\LH.DynDnsUpdate.Setup.wixproj.BindOutputsFileListnull.txt
+obj\Release\LH.DynDnsUpdate.Setup.wixproj.BindBuiltOutputsFileListnull.txt
+C:\Users\Dumy\documents\visual studio 2013\Projects\Net.DynDnsUpdate\LH.DynDnsUpdate.Setup\bin\Release\LH Dynamic DNS Update for Zerigo.msi
