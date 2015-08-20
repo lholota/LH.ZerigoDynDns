@@ -7,8 +7,8 @@
     <ProjectGuid>{ECAB5F85-E560-40DE-943B-C6FCBFCA10EA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Net.DynDnsUpdate</RootNamespace>
-    <AssemblyName>Net.DynDnsUpdate</AssemblyName>
+    <RootNamespace>LH.ZerigoDynDns.Service</RootNamespace>
+    <AssemblyName>LH.ZerigoDynDns.Service</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="AppSettingsKeys.cs" />
     <Compile Include="Args.cs" />
+    <Compile Include="Configuration\ZerigoConfigurationSection.cs" />
     <Compile Include="DnsUpdateService.cs" />
     <Compile Include="PublicIPRetriever.cs" />
     <Compile Include="ServiceWrapper.cs">

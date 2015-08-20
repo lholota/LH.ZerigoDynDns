@@ -1,1 +1,0 @@
-C:\Users\Dumy\documents\visual studio 2013\Projects\Net.DynDnsUpdate\LH.DynDnsUpdate.Setup\bin\Release\LH Dynamic DNS Update for Zerigo.msi

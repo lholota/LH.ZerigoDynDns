@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Net.DynDnsUpdate")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("LH.ZerigoDynDns.Service")]
+[assembly: AssemblyDescription("Dynamic DNS record update service for Zerigo.com")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Hewlett-Packard")]
-[assembly: AssemblyProduct("Net.DynDnsUpdate")]
-[assembly: AssemblyCopyright("Copyright © Hewlett-Packard 2015")]
+[assembly: AssemblyCompany("Lukas Holota")]
+[assembly: AssemblyProduct("LH.ZerigoDynDns.Service")]
+[assembly: AssemblyCopyright("Copyright © Lukas Holota 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
