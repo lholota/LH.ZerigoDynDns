@@ -1,36 +1,43 @@
-﻿using System;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Timers;
-using NLog;
-
-namespace Net.DynDnsUpdate
+﻿namespace LH.ZerigoDynDns.Service
 {
-    class DnsUpdateService
+    using System;
+    using System.Configuration;
+    using System.Linq;
+    using System.Net;
+    using System.Timers;
+    using Configuration;
+    using NLog;
+    using Requests;
+
+    internal class DnsUpdateService : IDisposable
     {
-        private readonly Timer _timer = new Timer();
-        private readonly ILogger _log = LogManager.GetCurrentClassLogger();
+        private readonly Timer timer = new Timer();
+        private readonly ILogger log = LogManager.GetCurrentClassLogger();
+        private readonly ZerigoDynDnsSection configSection;
+
+        public DnsUpdateService()
+        {
+            this.configSection = (ZerigoDynDnsSection)ConfigurationManager.GetSection("zerigoDynDns");
+        }
 
         public void Start()
         {
-            _log.Info("Starting the DNS Update service");
+            this.log.Info("Starting the DNS Update service");
 
-            var secondsString = ConfigurationManager.AppSettings[AppSettingsKeys.CheckIntervalSeconds];
-            var miliSeconds = double.Parse(secondsString)*1000;
+            var miliSeconds = this.configSection.CheckIntervalInSeconds * 1000;
 
-            _timer.Interval = miliSeconds;
-            _timer.Elapsed += TimerOnElapsed;
-            _timer.Start();
+            this.timer.Interval = miliSeconds;
+            this.timer.Elapsed += this.TimerOnElapsed;
+            this.timer.Start();
 
-            _log.Info("The DNS Update service has been started successfully");
+            this.log.Info("The DNS Update service has been started successfully");
         }
 
         public void Stop()
         {
-            _log.Info("Stopping the DNS Update service");
-            _timer.Stop();
-            _log.Info("The DNS Update service has been stopped");
+            this.log.Info("Stopping the DNS Update service");
+            this.timer.Stop();
+            this.log.Info("The DNS Update service has been stopped");
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -40,45 +47,51 @@ namespace Net.DynDnsUpdate
                 using (var client = new WebClient())
                 {
                     var publicIpRetriever = new PublicIpRetriever(client);
-                    var dnsUpdater = new ZerigoDnsUpdater(client);
+                    var dnsUpdater = new ZerigoDnsUpdater(client, this.configSection);
 
-                    var publicIp = publicIpRetriever.GetPublicIp(client);
-                    var domainIps = ResolveDomainIp()
-                        .Select(x => x.MapToIPv4())
-                        .Distinct()
-                        .ToArray();
+                    var publicIp = publicIpRetriever.GetPublicIp();
+                    this.log.Info("The public IP address is {0}.", publicIp);
 
-                    _log.Info("The public IP address is {0}.", publicIp);
-
-                    var ipCount = domainIps.Count();
-                    if (ipCount != 1)
+                    foreach (DomainElement domain in this.configSection.Domains)
                     {
-                        _log.Info("The IP address count was {0}, expected count is 1, updating the DNS records.", ipCount);
-                        dnsUpdater.UpdateDnsRecords(publicIp);
-                    }
+                        var domainIps = this.ResolveDomainIp(domain.Name)
+                            .Select(x => x.MapToIPv4())
+                            .Distinct()
+                            .ToArray();
 
-                    var domainIp = domainIps.Single();
-                    if (!publicIp.Equals(domainIp))
-                    {
-                        _log.Info("The domain points to an IP address {0} which is not the expected public IP, updating the DNS records.", domainIp);
-                        dnsUpdater.UpdateDnsRecords(publicIp);
+                        var ipCount = domainIps.Count();
+                        if (ipCount != 1)
+                        {
+                            this.log.Info("The IP address count was {0}, expected count is 1, updating the DNS records.", ipCount);
+                            dnsUpdater.UpdateDnsRecords(domain.Name, publicIp);
+                        }
+
+                        var domainIp = domainIps.Single();
+                        if (!publicIp.Equals(domainIp))
+                        {
+                            this.log.Info("The domain points to an IP address {0} which is not the expected public IP, updating the DNS records.", domainIp);
+                            dnsUpdater.UpdateDnsRecords(domain.Name, publicIp);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex);
+                this.log.Error(ex);
             }
-        }      
+        }
 
-        private IPAddress[] ResolveDomainIp()
+        private IPAddress[] ResolveDomainIp(string domain)
         {
-            var domain = ConfigurationManager.AppSettings[AppSettingsKeys.Domain];
-            _log.Info("Resolving DNS entry for the domain {0}", domain);
-
+            this.log.Info("Resolving DNS entry for the domain {0}", domain);
             var hostEntry = Dns.GetHostEntry(domain);
 
             return hostEntry.AddressList;
+        }
+
+        public void Dispose()
+        {
+            this.timer.Dispose();
         }
     }
 }

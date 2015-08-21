@@ -1,13 +1,13 @@
-﻿using System;
-using System.ServiceProcess;
-using CommandLine;
-using NLog;
-
-namespace Net.DynDnsUpdate
+﻿namespace LH.ZerigoDynDns.Service
 {
+    using System;
+    using System.ServiceProcess;
+    using CommandLine;
+    using NLog;
+
     static class Program
     {
-        private static readonly ILogger Log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         static void Main(string[] cmdLineArgs)
         {
@@ -18,7 +18,7 @@ namespace Net.DynDnsUpdate
 
                 if (!parser.ParseArguments(cmdLineArgs, args))
                 {
-                    Log.Fatal("Command line args could not be parsed.");
+                    log.Fatal("Command line args could not be parsed.");
                 }
                 else
                 {
@@ -34,7 +34,7 @@ namespace Net.DynDnsUpdate
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex);
+                log.Fatal(ex);
             }
         }
 
@@ -45,14 +45,16 @@ namespace Net.DynDnsUpdate
 
         private static void RunInConsole()
         {
-            var updateService = new DnsUpdateService();
-            updateService.Start();
-            Log.Info("Service started");
+            using (var updateService = new DnsUpdateService())
+            {
+                updateService.Start();
+                log.Info("Service started");
 
-            Console.WriteLine("Press any key to quit...");
-            Console.ReadKey(true);
+                Console.WriteLine("Press any key to quit...");
+                Console.ReadKey(true);
 
-            updateService.Stop();
+                updateService.Stop();
+            }
         }
     }
 }

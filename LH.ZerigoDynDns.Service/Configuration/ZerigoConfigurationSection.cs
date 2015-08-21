@@ -1,38 +1,16 @@
-﻿using System.Configuration;
-
-namespace LH.ZerigoDynDns.Service.Configuration
+﻿namespace LH.ZerigoDynDns.Service.Configuration
 {
-    public class ZerigoDynDns
-    {
-        private static ZerigoDynDnsSection _config;
-
-        static ZerigoDynDns()
-        {
-            _config = ((ZerigoDynDnsSection)(ConfigurationManager.GetSection("zerigoDynDns")));
-        }
-
-        private ZerigoDynDns()
-        {
-        }
-
-        public static ZerigoDynDnsSection Config
-        {
-            get
-            {
-                return _config;
-            }
-        }
-    }
+    using System.Collections.Generic;
+    using System.Configuration;
 
     public sealed class ZerigoDynDnsSection : ConfigurationSection
     {
-
         [ConfigurationProperty("checkIntervalInSeconds", IsRequired = true)]
-        public long CheckIntervalInSeconds
+        public int CheckIntervalInSeconds
         {
             get
             {
-                return ((long)(this["checkIntervalInSeconds"]));
+                return (int)this["checkIntervalInSeconds"];
             }
             set
             {
@@ -45,114 +23,55 @@ namespace LH.ZerigoDynDns.Service.Configuration
         {
             get
             {
-                return ((CredentialsElement)(this["credentials"]));
+                return (CredentialsElement)this["credentials"];
             }
         }
 
         [ConfigurationProperty("domains")]
-        [ConfigurationCollection(typeof(DomainsElementCollection.DomainElement), AddItemName = "domain")]
+        [ConfigurationCollection(typeof(DomainElement), AddItemName = "domain")]
         public DomainsElementCollection Domains
         {
             get
             {
-                return ((DomainsElementCollection)(this["domains"]));
+                return (DomainsElementCollection)this["domains"];
             }
         }
 
-        public  class CredentialsElement : ConfigurationElement
+        public IEnumerable<string> ValidateConfiguration()
         {
-
-            [ConfigurationProperty("userName", IsRequired = true)]
-            public string UserName
+            if (this.CheckIntervalInSeconds == 0)
             {
-                get
+                yield return "The CheckIntervalInSeconds has to be configured.";
+            }
+
+            if (this.Credentials == null)
+            {
+                yield return "The credentials element is missing.";
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(this.Credentials.UserName))
                 {
-                    return ((string)(this["userName"]));
+                    yield return "The Credentials/UserName is not set.";
                 }
-                set
+
+                if (string.IsNullOrEmpty(this.Credentials.ApiKey))
                 {
-                    this["userName"] = value;
+                    yield return "The Credentials/ApiKey is not set.";
                 }
             }
 
-            [ConfigurationProperty("apiKey", IsRequired = true)]
-            public string ApiKey
+            if (this.Domains == null)
             {
-                get
-                {
-                    return ((string)(this["apiKey"]));
-                }
-                set
-                {
-                    this["apiKey"] = value;
-                }
+                yield return "The domains element is missing.";
             }
-        }
-
-        public  class DomainsElementCollection : ConfigurationElementCollection
-        {
-
-            public DomainElement this[int i]
+            else
             {
-                get
+                if (this.Domains.Count == 0)
                 {
-                    return ((DomainElement)(this.BaseGet(i)));
-                }
-            }
-
-            protected override ConfigurationElement CreateNewElement()
-            {
-                return new DomainElement();
-            }
-
-            protected override object GetElementKey(ConfigurationElement element)
-            {
-                return ((DomainElement)(element)).Name;
-            }
-
-            public  class DomainElement : ConfigurationElement
-            {
-
-                [ConfigurationProperty("name", IsRequired = true)]
-                public string Name
-                {
-                    get
-                    {
-                        return ((string)(this["name"]));
-                    }
-                    set
-                    {
-                        this["name"] = value;
-                    }
-                }
-
-                [ConfigurationProperty("updateIpv4", IsRequired = true)]
-                public bool UpdateIpv4
-                {
-                    get
-                    {
-                        return ((bool)(this["updateIpv4"]));
-                    }
-                    set
-                    {
-                        this["updateIpv4"] = value;
-                    }
-                }
-
-                [ConfigurationProperty("updateIpv6", IsRequired = false)]
-                public bool UpdateIpv6
-                {
-                    get
-                    {
-                        return ((bool)(this["updateIpv6"]));
-                    }
-                    set
-                    {
-                        this["updateIpv6"] = value;
-                    }
+                    yield return "No domain elements have been configured.";
                 }
             }
         }
     }
-
 }

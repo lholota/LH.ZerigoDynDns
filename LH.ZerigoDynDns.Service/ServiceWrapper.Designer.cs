@@ -1,4 +1,4 @@
-﻿namespace Net.DynDnsUpdate
+﻿namespace LH.ZerigoDynDns.Service
 {
     partial class ServiceWrapper
     {
@@ -13,9 +13,10 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
+                this.updateService.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -28,8 +29,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            this.components = new System.ComponentModel.Container();
+            this.ServiceName = "ZerigoDynDnsUpdateService";
         }
 
         #endregion

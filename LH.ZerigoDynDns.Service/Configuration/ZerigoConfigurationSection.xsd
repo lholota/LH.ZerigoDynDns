@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ZerigoConfigurationSection" elementFormDefault="qualified"
+    targetNamespace="http://tempuri.org/ZerigoConfigurationSection/"
+    xmlns="http://tempuri.org/ZerigoConfigurationSection.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="zerigoDynDns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="credentials">
+          <xs:complexType>
+            <xs:attribute name="userName" type="xs:string" />
+            <xs:attribute name="apiKey" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="domains">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="domain">
+                <xs:complexType>
+                  <xs:attribute name="name" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="checkIntervalInSeconds" type="xs:int" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
