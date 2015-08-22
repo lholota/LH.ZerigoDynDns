@@ -5,11 +5,11 @@
     internal class Args
     {
         [Option('c', "console", Required = false, DefaultValue = false, 
-            HelpText = "Input files to be processed.")]
+            HelpText = "Run the application in console mode.")]
         public bool RunInConsole { get; set; }
 
-        [Option("config-check", Required = false, DefaultValue = false,
-            HelpText = "Only verifies the configuration is correct and complete.")]
+        [Option("check-config", Required = false, DefaultValue = false,
+            HelpText = "Only verifies the configuration is correct and complete. The application will run in console mode.")]
         public bool ConfigCheck { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace LH.ZerigoDynDns.Service
 {
     using System;
-    using System.Configuration;
     using System.Linq;
     using System.Net;
     using System.Timers;
@@ -11,23 +10,23 @@
 
     internal class DnsUpdateService : IDisposable
     {
+        private const int FirstRunTimerInterval = 5;
+
         private readonly Timer timer = new Timer();
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly ZerigoDynDnsSection configSection;
 
         public DnsUpdateService()
         {
-            this.configSection = (ZerigoDynDnsSection)ConfigurationManager.GetSection("zerigoDynDns");
+            this.configSection = ZerigoDynDnsSection.LoadFromConfig();
         }
 
         public void Start()
         {
             this.log.Info("Starting the DNS Update service");
 
-            var miliSeconds = this.configSection.CheckIntervalInSeconds * 1000;
-
-            this.timer.Interval = miliSeconds;
-            this.timer.Elapsed += this.TimerOnElapsed;
+            this.timer.Interval = FirstRunTimerInterval;
+            this.timer.Elapsed += (sender, e) => this.CheckDomains();
             this.timer.Start();
 
             this.log.Info("The DNS Update service has been started successfully");
@@ -40,8 +39,15 @@
             this.log.Info("The DNS Update service has been stopped");
         }
 
-        private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        private void CheckDomains()
         {
+            if (Math.Abs(this.timer.Interval - FirstRunTimerInterval) < 1)
+            {
+                this.timer.Stop();
+                this.timer.Interval = this.configSection.CheckIntervalInSeconds * 1000;
+                this.timer.Start();
+            }
+
             try
             {
                 using (var client = new WebClient())
@@ -54,23 +60,39 @@
 
                     foreach (DomainElement domain in this.configSection.Domains)
                     {
-                        var domainIps = this.ResolveDomainIp(domain.Name)
-                            .Select(x => x.MapToIPv4())
-                            .Distinct()
-                            .ToArray();
-
-                        var ipCount = domainIps.Count();
-                        if (ipCount != 1)
+                        try
                         {
-                            this.log.Info("The IP address count was {0}, expected count is 1, updating the DNS records.", ipCount);
-                            dnsUpdater.UpdateDnsRecords(domain.Name, publicIp);
+                            var domainIps = this.ResolveDomainIp(domain.Name)
+                                .Select(x => x.MapToIPv4())
+                                .Distinct()
+                                .ToArray();
+
+                            var ipCount = domainIps.Count();
+                            if (ipCount != 1)
+                            {
+                                this.log.Info(
+                                    "The IP address count was {0}, expected count is 1, updating the DNS records.",
+                                    ipCount);
+                                dnsUpdater.UpdateDnsRecords(domain.Name, publicIp);
+                            }
+
+                            var domainIp = domainIps.Single();
+                            if (!publicIp.Equals(domainIp))
+                            {
+                                this.log.Info(
+                                    "The domain points to an IP address {0} which is not the expected public IP, updating the DNS records.",
+                                    domainIp);
+
+                                dnsUpdater.UpdateDnsRecords(domain.Name, publicIp);
+                            }
+                            else
+                            {
+                                this.log.Info("The domain {0} points to the correct address.", domain.Name);
+                            }
                         }
-
-                        var domainIp = domainIps.Single();
-                        if (!publicIp.Equals(domainIp))
+                        catch (Exception ex)
                         {
-                            this.log.Info("The domain points to an IP address {0} which is not the expected public IP, updating the DNS records.", domainIp);
-                            dnsUpdater.UpdateDnsRecords(domain.Name, publicIp);
+                            this.log.Error(ex, "Processing the domain {0} failed", domain.Name);
                         }
                     }
                 }

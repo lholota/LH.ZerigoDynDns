@@ -1,15 +1,19 @@
 ﻿namespace LH.ZerigoDynDns.Service
 {
     using System;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
     using System.ServiceProcess;
     using CommandLine;
+    using Configuration;
     using NLog;
 
-    static class Program
+    public static class Program
     {
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        static void Main(string[] cmdLineArgs)
+        public static void Main(string[] cmdLineArgs)
         {
             try
             {
@@ -22,7 +26,11 @@
                 }
                 else
                 {
-                    if (args.RunInConsole)
+                    if (args.ConfigCheck)
+                    {
+                        VerifyConfiguration();
+                    }
+                    else if (args.RunInConsole)
                     {
                         RunInConsole();
                     }
@@ -54,6 +62,35 @@
                 Console.ReadKey(true);
 
                 updateService.Stop();
+            }
+        }
+
+        private static void VerifyConfiguration()
+        {
+            var section = ZerigoDynDnsSection.LoadFromConfig();
+
+            if (section == null)
+            {
+                var assemblyName = Path.GetFileName(Assembly.GetExecutingAssembly().Location);
+                Console.WriteLine("The configuration/zerigoDynDns element is missing in the {0}.exe.config.", assemblyName);
+            }
+            else
+            {
+                var errors = section
+                    .ValidateConfiguration()
+                    .ToArray();
+
+                if (!errors.Any())
+                {
+                    Console.WriteLine("The configuration validation was successful.");
+                }
+                else
+                {
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine(error);
+                    }
+                }
             }
         }
     }

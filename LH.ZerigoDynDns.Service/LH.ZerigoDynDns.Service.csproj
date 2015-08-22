@@ -59,7 +59,7 @@
     <Compile Include="Configuration\CredentialsElement.cs" />
     <Compile Include="Configuration\DomainElement.cs" />
     <Compile Include="Configuration\DomainsElementCollection.cs" />
-    <Compile Include="Configuration\ZerigoConfigurationSection.cs" />
+    <Compile Include="Configuration\ZerigoDynDnsSection.cs" />
     <Compile Include="DnsUpdateService.cs" />
     <Compile Include="Requests\PublicIPRetriever.cs" />
     <Compile Include="ServiceWrapper.cs">

@@ -5,6 +5,11 @@
 
     public sealed class ZerigoDynDnsSection : ConfigurationSection
     {
+        public static ZerigoDynDnsSection LoadFromConfig()
+        {
+            return (ZerigoDynDnsSection)ConfigurationManager.GetSection("zerigoDynDns");
+        }
+
         [ConfigurationProperty("checkIntervalInSeconds", IsRequired = true)]
         public int CheckIntervalInSeconds
         {
