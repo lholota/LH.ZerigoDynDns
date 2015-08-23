@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="cb9322fe-7f26-45c7-b914-017d482b0dc5" 
+           Name="LH Dynamic DNS for Zerigo.com" 
+           Language="1033" 
+           Version="!(bind.FileVersion.LH.ZerigoDynDns.Service.exe)" 
+           Manufacturer="Lukas Holota"
+           UpgradeCode="88dee108-a60d-4f22-840b-f37d5be9ab3c">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="Dynamic DNS update service" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+
+    <!-- User Interface -->
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.SolutionDir)\license.rtf" />
+    <UIRef Id="WixUI_InstallDir" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="Before starting the service:&#13;&#10;- Update the LH.ZergiDynDns.Service.exe.config&#13;&#10;   - Enter your zerigo credentials&#13;&#10;   - Add the domains you want to be monitored&#13;&#10;- Start the service&#13;&#10;- Enjoy your dynamic DNS :)" />
+
+    <!--
+    <Icon Id="icon.ico" SourceFile="MySourceFiles\icon.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+    -->
+  </Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="LH ZerigoDynDns" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="DynDnsUpdateService" Guid="7bd1b8a1-04d6-40d3-96e2-c4329e3a4b79">
+        <File Source="$(var.SolutionDir)\license" Name="License.txt" />
+        <File Source="$(var.SolutionDir)\readme.md" Name="Readme.txt" />
+        <File Source="$(var.LH.ZerigoDynDns.Service.TargetDir)\CommandLine.dll" />
+        <File Source="$(var.LH.ZerigoDynDns.Service.TargetDir)\NLog.dll" />       
+        <File Source="$(var.LH.ZerigoDynDns.Service.TargetDir)\NLog.config" />
+        <File Source="$(var.LH.ZerigoDynDns.Service.TargetPath)" KeyPath="yes" />
+        <File Source="$(var.LH.ZerigoDynDns.Service.TargetPath).config" />
+        
+        <ServiceInstall Name="LH.ZerigoDynDns"
+                        DisplayName="LH Dynamic DNS for zerigo.com"
+                        Description="This service automatically checks the DNS records for configured domain and updates them if necessary with the closest public IP of this machine."
+                        ErrorControl="normal" Start="auto" Vital="yes" Type="ownProcess">          
+        </ServiceInstall>
+      </Component>
+		</ComponentGroup>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />    
+  </Fragment>
+</Wix>
