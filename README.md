@@ -47,7 +47,7 @@ The values entered into the section is a sample of the simplest setup. For more 
 The service does not start? The DNS records are not updated? There could be a number of things wrong, but there are some tools built in to help you find out what the problem is.
 
 ### Logging
-By default the application logs all warnings and errors into the Windows Event Log. Check the log under Windows Logs --> Application. The source of the events raised by the application is "LH.ZerigoDynDns".
+By default the application logs all warnings and errors into the Windows Event Log. Check the log under Windows Logs - Application. The source of the events raised by the application is "LH.ZerigoDynDns".
 
 ### Console mode
 The application can be run in console mode. In this case it logs all diagnostic messages into the console (level debug and above, therefore these messages are more detailed). Simply run the application with the parameters as shown below:
