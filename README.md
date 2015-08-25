@@ -63,4 +63,4 @@ There is another useful parameter you can execute the application with - check-c
 This application is released under the [MIT license](https://github.com/lholota/LH.ZerigoDynDns/blob/master/LICENSE).
     
 ## Found a bug?
-Please create an [issue](https://github.com/lholota/LH.ZerigoDynDns/issues/new). You will help to improve the application and you will receive the fix shortly.
+Please create an [issue](https://github.com/lholota/LH.ZerigoDynDns/issues/new) or fork the repo and submit a pull request :)
