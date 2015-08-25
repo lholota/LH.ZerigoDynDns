@@ -6,7 +6,7 @@
     using LH.ZerigoDynDns.Service;
     using NLog;
 
-    class ZerigoDnsUpdater
+    internal class ZerigoDnsUpdater
     {
         private readonly WebClient client;
         private readonly ZerigoDynDnsSection configSection;
@@ -28,8 +28,11 @@
                 .Replace("$USERNAME$", this.configSection.Credentials.UserName)
                 .Replace("$APIKEY$", this.configSection.Credentials.ApiKey);
 
-            this.log.Info("Updating the DNS record for {0} to {1} using the following uri: {2}.", 
-                domain, newPublicIp, uri);
+            this.log.Info(
+                "Updating the DNS record for {0} to {1} using the following uri: {2}.", 
+                domain, 
+                newPublicIp, 
+                uri);
 
             this.client.DownloadString(uri);
 

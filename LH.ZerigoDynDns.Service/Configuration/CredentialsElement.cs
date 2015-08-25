@@ -11,6 +11,7 @@
             {
                 return (string)this["userName"];
             }
+
             set
             {
                 this["userName"] = value;
@@ -24,6 +25,7 @@
             {
                 return (string)this["apiKey"];
             }
+
             set
             {
                 this["apiKey"] = value;

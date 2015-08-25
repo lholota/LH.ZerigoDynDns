@@ -2,7 +2,7 @@
 {
     using System.Configuration;
 
-    public  class DomainsElementCollection : ConfigurationElementCollection
+    public class DomainsElementCollection : ConfigurationElementCollection
     {
         public DomainElement this[int i]
         {

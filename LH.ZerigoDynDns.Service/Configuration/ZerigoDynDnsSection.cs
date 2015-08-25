@@ -17,6 +17,7 @@
             {
                 return (int)this["checkIntervalInSeconds"];
             }
+
             set
             {
                 this["checkIntervalInSeconds"] = value;

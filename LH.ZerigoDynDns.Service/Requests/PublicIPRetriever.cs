@@ -7,7 +7,7 @@
     using LH.ZerigoDynDns.Service;
     using NLog;
 
-    class PublicIpRetriever
+    internal class PublicIpRetriever
     {
         private readonly WebClient client;
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
