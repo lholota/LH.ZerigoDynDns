@@ -58,3 +58,6 @@ The application can be run in console mode. In this case it logs all diagnostic 
 There is another useful parameter you can execute the application with - check-config. In this case the application will run in console mode automatically and it will only load the configuration and verify that it is correct. If there is an error in the configuration, you will see it in the console output.
 
     LH.ZerigoDynDns.Service.exe --check-config
+    
+## Found a bug?
+Please create an [issue](https://github.com/lholota/LH.ZerigoDynDns/issues/new). You will help to improve the application and you will receive the fix shortly.
