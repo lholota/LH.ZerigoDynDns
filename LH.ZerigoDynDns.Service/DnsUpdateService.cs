@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Net;
+    using System.Net.Http;
     using System.Timers;
     using Configuration;
     using NLog;
@@ -55,7 +56,7 @@
 
             try
             {
-                using (var client = new WebClient())
+                using (var client = new HttpClient())
                 {
                     var publicIpRetriever = new PublicIpRetriever(client);
                     var dnsUpdater = new ZerigoDnsUpdater(client, this.configSection);
@@ -78,6 +79,7 @@
                                 this.log.Info(
                                     "The IP address count was {0}, expected count is 1, updating the DNS records.",
                                     ipCount);
+
                                 dnsUpdater.UpdateDnsRecords(domain.Name, publicIp);
                             }
 

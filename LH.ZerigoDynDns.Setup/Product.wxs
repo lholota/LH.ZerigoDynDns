@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Product Id="cb9322fe-7f26-45c7-b914-017d482b0dc5" 
            Name="LH Dynamic DNS for Zerigo.com" 
            Language="1033" 
@@ -42,7 +43,11 @@
         <File Source="$(var.LH.ZerigoDynDns.Service.TargetDir)\NLog.config" />
         <File Source="$(var.LH.ZerigoDynDns.Service.TargetPath)" KeyPath="yes" />
         <File Source="$(var.LH.ZerigoDynDns.Service.TargetPath).config" />
-        
+
+        <util:InternetShortcut Id="OnlineDocumentationShortcut"
+                        Name="Online Documentation"
+                        Target="https://github.com/lholota/LH.ZerigoDynDns"/>
+
         <ServiceInstall Name="LH.ZerigoDynDns"
                         DisplayName="LH Dynamic DNS for zerigo.com"
                         Description="This service automatically checks the DNS records for configured domain and updates them if necessary with the closest public IP of this machine."

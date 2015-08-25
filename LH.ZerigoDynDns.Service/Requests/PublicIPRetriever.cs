@@ -3,16 +3,17 @@
     using System;
     using System.Configuration;
     using System.Net;
+    using System.Net.Http;
     using System.Xml.Linq;
     using LH.ZerigoDynDns.Service;
     using NLog;
 
     internal class PublicIpRetriever
     {
-        private readonly WebClient client;
+        private readonly HttpClient client;
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        public PublicIpRetriever(WebClient client)
+        public PublicIpRetriever(HttpClient client)
         {
             this.client = client;
         }
@@ -22,7 +23,7 @@
             var uri = ConfigurationManager.AppSettings[AppSettingsKeys.ZerigoWhatsMyIpUri];
             this.log.Info("Retrieving the public IP from {0}", uri);
 
-            var response = this.client.DownloadString(new Uri(uri));
+            var response = this.client.GetStringAsync(new Uri(uri)).Result;
 
             return this.ParseWhatsMyIpResponse(response);
         }

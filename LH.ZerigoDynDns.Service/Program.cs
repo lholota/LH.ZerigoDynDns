@@ -22,7 +22,8 @@
 
                 if (!parser.ParseArguments(cmdLineArgs, args))
                 {
-                    log.Fatal("Command line args could not be parsed.");
+                    log.Fatal("Command line args could not be parsed. Exiting the application.");
+                    Environment.ExitCode = 1;
                 }
                 else
                 {
@@ -30,13 +31,23 @@
                     {
                         VerifyConfiguration();
                     }
-                    else if (args.RunInConsole)
-                    {
-                        RunInConsole();
-                    }
                     else
                     {
-                        RunAsService();
+                        if (!VerifyConfiguration())
+                        {
+                            log.Fatal("The configuration validation failed, exiting the application.");
+                            Environment.ExitCode = 2;
+                            return;
+                        }
+
+                        if (args.RunInConsole)
+                        {
+                            RunInConsole();
+                        }
+                        else
+                        {
+                            RunAsService();
+                        }
                     }
                 }
             }
@@ -65,33 +76,37 @@
             }
         }
 
-        private static void VerifyConfiguration()
+        private static bool VerifyConfiguration()
         {
             var section = ZerigoDynDnsSection.LoadFromConfig();
 
             if (section == null)
             {
                 var assemblyName = Path.GetFileName(Assembly.GetExecutingAssembly().Location);
-                Console.WriteLine("The configuration/zerigoDynDns element is missing in the {0}.exe.config.", assemblyName);
+                log.Error("The configuration/zerigoDynDns element is missing in the {0}.exe.config.", assemblyName);
+
+                return false;
+            }
+
+            var errors = section
+                .ValidateConfiguration()
+                .ToArray();
+
+            var hasPassedValidation = !errors.Any();
+
+            if (hasPassedValidation)
+            {
+                log.Info("The configuration validation was successful.");
             }
             else
             {
-                var errors = section
-                    .ValidateConfiguration()
-                    .ToArray();
-
-                if (!errors.Any())
+                foreach (var error in errors)
                 {
-                    Console.WriteLine("The configuration validation was successful.");
-                }
-                else
-                {
-                    foreach (var error in errors)
-                    {
-                        Console.WriteLine(error);
-                    }
+                    log.Error(error);
                 }
             }
+
+            return hasPassedValidation;
         }
     }
 }
