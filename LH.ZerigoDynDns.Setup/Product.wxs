@@ -20,10 +20,8 @@
     <UIRef Id="WixUI_InstallDir" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="Before starting the service:&#13;&#10;- Update the LH.ZergiDynDns.Service.exe.config&#13;&#10;   - Enter your zerigo credentials&#13;&#10;   - Add the domains you want to be monitored&#13;&#10;- Start the service&#13;&#10;- Enjoy your dynamic DNS :)" />
 
-    <!--
-    <Icon Id="icon.ico" SourceFile="MySourceFiles\icon.ico"/>
-    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
-    -->
+    <Icon Id="LH_Logo.ico" SourceFile="$(var.LH.ZerigoDynDns.Service.TargetDir)\LH_Logo.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="LH_Logo.ico" />
   </Product>
 
 	<Fragment>

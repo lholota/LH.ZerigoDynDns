@@ -39,6 +39,11 @@
             this.log.Info("The DNS Update service has been stopped");
         }
 
+        public void Dispose()
+        {
+            this.timer.Dispose();
+        }
+
         private void CheckDomains()
         {
             if (Math.Abs(this.timer.Interval - FirstRunTimerInterval) < 1)
@@ -109,11 +114,6 @@
             var hostEntry = Dns.GetHostEntry(domain);
 
             return hostEntry.AddressList;
-        }
-
-        public void Dispose()
-        {
-            this.timer.Dispose();
         }
     }
 }
