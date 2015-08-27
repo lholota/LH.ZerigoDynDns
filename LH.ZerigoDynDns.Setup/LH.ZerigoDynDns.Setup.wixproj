@@ -8,6 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>LH.ZerigoDynDns.Setup</OutputName>
     <OutputType>Package</OutputType>
+	<WixInstallPath>..\packages\WiX.3.10.0.1726-pre\tools\</WixInstallPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">Wix.targets</WixTargetsPath>
   </PropertyGroup>
