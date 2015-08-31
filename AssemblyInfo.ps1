@@ -45,14 +45,20 @@ function Update-AllAssemblyInfoFiles ( $version )
    }
 }
 
+Write-Host "DEBUG - Args: $args"
+
 # validate arguments 
 if ($args -ne $null) {
     $version = $args[0]
+	Write-Host "Version: $version"
+	
     if (($version -eq '/?') -or ($version -notmatch "[0-9]+(\.([0-9]+|\*)){1,3}")) {
+		Write-Host "Version did not match the pattern"
         Help
         exit 1;
     }
 } else {
+	Write-Host "No args found..."
     Help
     exit 1;
 }
