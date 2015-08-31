@@ -49,19 +49,13 @@ function Update-AllAssemblyInfoFiles ( $version )
 Write-Host "Script arguments: $args"
 
 # validate arguments 
-if ($args -ne $null) {
-	Write-Host "Version: $Version"
-	Write-Host "Path: $Path"
-	
-    if (($Version -eq '/?') -or ($Version -notmatch "[0-9]+(\.([0-9]+|\*)){1,3}")) {
-		Write-Host "Version did not match the pattern"
-        Help
-        exit 1;
-    }
-} else {
-	Write-Host "No args found..."
-    Help
-    exit 1;
+Write-Host "Version: $Version"
+Write-Host "Path: $Path"
+
+if (($Version -eq '/?') -or ($Version -notmatch "[0-9]+(\.([0-9]+|\*)){1,3}")) {
+	Write-Host "Version did not match the pattern"
+	Help
+	exit 1;
 }
 
 Update-AllAssemblyInfoFiles $Version
