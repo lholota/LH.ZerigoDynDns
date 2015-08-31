@@ -6,12 +6,13 @@
 # https://github.com/ferventcoder/this.Log/blob/master/build.ps1#L6-L19
 
 Param(
-    [string]$path=$pwd
+	[string]$Version,
+    [string]$Path=$pwd
 )
 
 function Help {
     "Sets the AssemblyVersion and AssemblyFileVersion of AssemblyInfo.cs files`n"
-    ".\SetAssemblyVersion.ps1 [VersionNumber] -path [SearchPath]`n"
+    ".\SetAssemblyVersion.ps1 -Version [VersionNumber] -Path [SearchPath]`n"
     "   [VersionNumber]     The version number to set, for example: 1.1.9301.0"
     "   [SearchPath]        The path to search for AssemblyInfo files.`n"
 }
@@ -38,21 +39,21 @@ function Update-SourceVersion
 }
 function Update-AllAssemblyInfoFiles ( $version )
 {
-    Write-Host "Searching '$path'"
+    Write-Host "Searching '$Path'"
    foreach ($file in "AssemblyInfo.cs", "AssemblyInfo.vb" ) 
    {
-        get-childitem $path -recurse |? {$_.Name -eq $file} | Update-SourceVersion $version ;
+        get-childitem $Path -recurse |? {$_.Name -eq $file} | Update-SourceVersion $version ;
    }
 }
 
-Write-Host "DEBUG - Args: $args"
+Write-Host "Script arguments: $args"
 
 # validate arguments 
 if ($args -ne $null) {
-    $version = $args[0]
-	Write-Host "Version: $version"
+	Write-Host "Version: $Version"
+	Write-Host "Path: $Path"
 	
-    if (($version -eq '/?') -or ($version -notmatch "[0-9]+(\.([0-9]+|\*)){1,3}")) {
+    if (($Version -eq '/?') -or ($Version -notmatch "[0-9]+(\.([0-9]+|\*)){1,3}")) {
 		Write-Host "Version did not match the pattern"
         Help
         exit 1;
@@ -63,4 +64,4 @@ if ($args -ne $null) {
     exit 1;
 }
 
-Update-AllAssemblyInfoFiles $version
+Update-AllAssemblyInfoFiles $Version
