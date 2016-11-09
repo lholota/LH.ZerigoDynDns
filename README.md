@@ -6,7 +6,7 @@ Well, so did I and since the most popular service which is built in most of the 
 - A domain which is either hosted or at least its DNS records are hosted at zerigo.com
 
 ## How to get it running?
-- [Download the installation package](https://github.com/lholota/LH.ZerigoDynDns/releases/download/v1.0.0/LH.ZerigoDynDns.Setup.msi)
+- [Download the installation package](https://github.com/lholota/LH.ZerigoDynDns/releases/download/v1.0.2/LH.ZerigoDynDns.Setup.msi)
 - Install it on your (home) server
 - Update the config file (as described below)
 - Start the service "LH Dynamic Dns for zerigo.com" and you are done
